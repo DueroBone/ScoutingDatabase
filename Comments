@@ -1,0 +1,4 @@
+Data structure: // + means another could be many of that item
+  Events < eventName+ < teamNumber+ < liveScrapedInfo // updated every ~30 sec
+                                      staticScoutedInfo
+                                      roundInfo+ (named)
