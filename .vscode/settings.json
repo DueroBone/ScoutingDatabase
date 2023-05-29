@@ -1,0 +1,6 @@
+// Workspace settings
+{
+  "files.exclude": {
+      "__pycache__": true,
+  }
+}

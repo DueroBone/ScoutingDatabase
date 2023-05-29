@@ -1,5 +1,3 @@
-DataFolderName = "Events"
-
 eventName = ""
-workingPath = ""
+dataPath = ""
 teams = []

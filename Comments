@@ -1,4 +1,5 @@
 Data structure: // + means another could be many of that item
-  Events < eventName+ < teamNumber+ < liveScrapedInfo // updated every ~30 sec
-                                      staticScoutedInfo
-                                      roundInfo+ (named)
+  Events < eventName+ < Teams < teamNumber+ < liveScrapedInfo // updated every ~30 sec
+                                              staticScoutedInfo
+                                              roundInfo+ (named)
+                        Input < scouterName+ < matchNumber+ < teamNumber+ < data || piped to roundInfo+ after x rounds

@@ -8,7 +8,7 @@ def makeLogFile():
     if not os.path.exists("Logs"):
         os.makedirs("Logs")
     global logFile
-    logFile = open(f"Logs/{logName}", "a")
+    logFile = open(f"Logs/{logName}.txt", "a")
     Log("Creating logfile")
 
 
@@ -17,11 +17,13 @@ def Log(Input, level=0):
     0 = standard\n
     1 = !\n
     2 = #\n
-    3 = %\n"""
+    3 = TODO\n"""
     global logFile
-    if not os.path.exists(f"Logs/{logName}"):
+    if not os.path.exists(f"Logs/{logName}.txt"):
         makeLogFile()
-    if level == 2:
+    if level == 3:
+        tags = "TODO"
+    elif level == 2:
         tags = "#"
     elif level == 1:
         tags = "!"
