@@ -6,7 +6,7 @@ from Config import *
 
 def getTeamsInEvent():
     Log("Not set up yet, returning hardcoded value", 3)
-    return [4485, 7192]
+    return [4485, 1741]
 
 
 def setupTeams(teamInput, path):

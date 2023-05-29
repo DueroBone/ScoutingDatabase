@@ -8,7 +8,7 @@ def makeLogFile():
     if not os.path.exists("Logs"):
         os.makedirs("Logs")
     global logFile
-    logFile = open(f"Logs/{logName}.txt", "a")
+    logFile = open(f"Logs/{logName}.txt", "a", 1)
     Log("Creating logfile")
 
 
