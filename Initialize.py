@@ -1,24 +1,33 @@
+import datetime
 import os
 import sys
 from BasicFunctions import Log
 import ImportantVariables as IV
 import Config
+import importlib
+import re
+import requests
 
 
-def gatherRequirements():
-    package = "statbotics"
-    import importlib
+def importMod(package):
     try:
         importlib.import_module(package)
+        Log(f"Package {package} already installed")
     except (ImportError, ModuleNotFoundError):
-        Log("Statbotics not installed", 1)
+        Log(f"{package} not installed", 1)
         import subprocess
         subprocess.check_call(
             [sys.executable, "-m", "pip", "install", package])
         globals()[package] = importlib.import_module(package)
-        Log('Installed statbotics')
+        Log(f"Installed {package}")
+
+
+def gatherRequirements():
+    importMod("cherrypy")
+    importMod("statbotics")
     import statbotics
-    IV.m_Statbotics = statbotics.Statbotics()
+    IV.apiStatbotics = statbotics.Statbotics()
+
 
 
 def getTeamsInEvent():
@@ -35,9 +44,29 @@ def setupTeams(teamInput, path):
 
         if not os.path.isdir(newPath):
             os.makedirs(newPath)
-            open(f"{newPath}/{Config.TBATeamInfoFileName}", "x")
+            open(f"{newPath}/{Config.ScrapedInfoFileName}", "x")
             open(f"{newPath}/{Config.ScoutedTeamInfoFileName}", "x")
             Log(f"Team {team}: added")
+
+
+def getOngoingEvent():
+    currentEvents = IV.apiStatbotics.get_events(
+        district=Config.District, year=datetime.datetime.today().year, fields=["name"])
+    currentEvents = re.findall(r"'(.+?)'", f"{currentEvents}")[1::2]
+    possCurrentEvents = [match for match in currentEvents if IV.eventName.lower() in match.lower()]
+    if len(possCurrentEvents) == 1:
+        IV.trueEventName = possCurrentEvents[0]
+    else:
+        IV.trueEventName = possCurrentEvents[int(input(f"Input index of actual event name: {possCurrentEvents}"))]
+    Log(f"Actual  event name: {IV.trueEventName}")
+    print(f"Actual  event name: {IV.trueEventName}")
+
+    possCurrentEvents = []
+    currentEvents = IV.apiStatbotics.get_events(district=Config.District, year=datetime.datetime.today().year)
+    for event in currentEvents:
+        if event.get('name') == IV.trueEventName:
+            IV.trueEventKey = event.get('key')
+
 
 
 def initialize():
@@ -53,27 +82,31 @@ def initialize():
     inputName = input(
         f"What is the event?  Enter new name, or index of saved events:\n{Folders}\n")
     if inputName.isdigit():
-        eventName = Folders[int(inputName)]
+        IV.eventName = Folders[int(inputName)]
     else:
-        eventName = inputName
-    Log(f"Selected event: {eventName}")
+        IV.eventName = inputName
+    Log(f"Selected event: {IV.eventName}")
 
-    if not os.path.isdir(f"{Config.DataFolderName}/{eventName}"):
-        Log(f"Making event directory: {eventName}", 1)
-        os.mkdir(f"{Config.DataFolderName}/{eventName}")
-    dataPath = f"{Config.DataFolderName}/{eventName}"
+    if not os.path.isdir(f"{Config.DataFolderName}/{IV.eventName}"):
+        Log(f"Making event directory: {IV.eventName}", 1)
+        os.mkdir(f"{Config.DataFolderName}/{IV.eventName}")
+    IV.dataPath = f"{Config.DataFolderName}/{IV.eventName}"
+
+    if IV.trueEventName == "":
+        getOngoingEvent()
 
     Log("Getting teams from TBA")
-    teams = getTeamsInEvent()
-    Log(f"{len(teams)} teams in event: {teams}")
+    IV.teams = getTeamsInEvent()
+    Log(f"{len(IV.teams)} teams in event: {IV.teams}")
 
     Log("Setting up teams")
-    setupTeams(teams, dataPath)
+    setupTeams(IV.teams, IV.dataPath)
     Log("Teams set up")
 
-    if not os.path.isdir(f"{dataPath}/{Config.IncomingFolderName}"):
-        os.mkdir(f"{dataPath}/{Config.IncomingFolderName}")
+    if not os.path.isdir(f"{IV.dataPath}/{Config.IncomingFolderName}"):
+        os.mkdir(f"{IV.dataPath}/{Config.IncomingFolderName}")
         Log("Making incoming data directory")
 
     Log("Direct online satilites to here", 3)
+    IV.isRunning = True
     Log("Server started")

@@ -10,17 +10,15 @@ def updateBackend():
     # Input
 
 
-def pollApis(statsModule):
-    Log("Poll TBA", 3)
-    Log("Poll Statbotics", 3)
-    Log("Statbotics says:" +
-        str(IV.m_Statbotics.get_events(district="FIN", fields=["name"])))
-    # statbotics.team_event_metrics(4485, "IDk what event")
-
+def pollApis():
+    for team in IV.teams:
+        file = open(f"{IV.dataPath}/Teams/{team}/{Config.ScrapedInfoFileName}", "w")
+        file.write(str(IV.apiStatbotics.get_team_event(team, IV.trueEventKey)))
+        file.close()
 
 def backend():
-    while True:
-        pollApis(IV.m_Statbotics)
+    while IV.isRunning:
+        pollApis()
         for i in range(Config.ApiDelayReps):
             updateBackend()
             time.sleep(Config.BackendDelaySec)

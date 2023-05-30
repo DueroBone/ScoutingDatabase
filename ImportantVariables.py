@@ -1,5 +1,9 @@
 eventName = ""
+trueEventName = ""
+trueEventKey = ""
 dataPath = ""
-teams = []
+teams = [""]
+isRunning = False
 
-m_Statbotics = None
+apiStatbotics = None
+apiTBI = None
