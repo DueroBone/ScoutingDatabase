@@ -2,7 +2,9 @@ import time
 
 from BasicFunctions import Log
 import Config
+import Webserver
 import ImportantVariables as IV
+import cherrypy
 
 
 def updateBackend():
@@ -22,3 +24,7 @@ def backend():
         for i in range(Config.ApiDelayReps):
             updateBackend()
             time.sleep(Config.BackendDelaySec)
+            if not IV.isRunning:
+                break
+    Log("Shutting down web server")
+    cherrypy.engine.exit()

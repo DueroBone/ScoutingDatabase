@@ -12,8 +12,8 @@ def makeLogFile():
     Log("Creating logfile")
 
 
-def Log(Input, level=0):
-    """Input is what will be written down. Level is severity. \n
+def Log(Input, level=0, Print=False):
+    """Input is what will be written down. Level is severity. Print is weather or not to print to cli as well.\n
     0 = standard\n
     1 = !\n
     2 = #\n
@@ -31,4 +31,6 @@ def Log(Input, level=0):
         tags = ""
     logFile.write(
         f"{datetime.datetime.now().time().replace(microsecond=0)} >{tags}> {Input}\n")
+    if Print:
+        print(Input)
     return logFile
