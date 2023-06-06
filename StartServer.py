@@ -13,6 +13,8 @@ def stopServer(thread):
     IV.isRunning = False
     Log("Shutting down server", 2, True)
     thread.join()
+    Log("Shutting down web server")
+    cherrypy.engine.exit()
     Log("Finished", 2, True)
 
 
@@ -37,12 +39,14 @@ def startServer():
             print("\nhelp: what you see right now\nstop: stops\nrestart: restarts\n")
         elif command == "stop":
             stopServer(backendThread)
+            exit()
         elif command == "restart":
             stopServer(backendThread)
             startServer()
         else:
             print("Unrecognized command! Type help for more info")
+    Log("--End of script--", 1)
 
 
-startServer()
-Log("--End of script--", 1)
+if __name__ == "__main__":
+    startServer()

@@ -1,17 +1,14 @@
 import datetime
 import os
-import sys
 from threading import Thread
 
 import cherrypy
 from BasicFunctions import Log
 import ImportantVariables as IV
 import Config
-import importlib
 import re
 import Webserver
 import statbotics
-import requests
 
 
 def getTeamsInEvent():
@@ -52,6 +49,8 @@ def getOngoingEvent():
     for event in currentEvents:
         if event.get('name') == IV.trueEventName:
             IV.trueEventKey = event.get('key')
+            break
+    Log("Hard save the event info", 3)
 
 
 def makeNewEvent():
@@ -75,6 +74,19 @@ def makeNewEvent():
     os.mkdir(f"{IV.dataPath}/{Config.IncomingFolderName}")
 
 
+def resumeEvent():
+    Log("SET UP RETURNING EVENT", 3, True)
+    IV.dataPath = f"{Config.DataFolderName}/{IV.eventName}"
+    getOngoingEvent()
+
+    Log("Getting teams from TBA")
+    IV.teams = getTeamsInEvent()
+    Log(f"{len(IV.teams)} teams in event: {IV.teams}")
+
+    Log("Setting up teams")
+    setupTeams(IV.teams, IV.dataPath)
+
+
 def initialize(isNew=False):
     Log("Starting server")
 
@@ -90,12 +102,11 @@ def initialize(isNew=False):
         f"What is the event?  Enter new name, or index of saved events:\n{Folders}\n")
     if inputName.isdigit():
         IV.eventName = Folders[int(inputName)]
-        Log("SET UP RETURNING EVENT", 3, True)
+        resumeEvent()
     else:
         IV.eventName = inputName
         makeNewEvent()
     Log(f"Selected event: {IV.eventName}")
-
 
     Log("Starting web server")
     cherrypy.config.update(
@@ -107,3 +118,9 @@ def initialize(isNew=False):
     IV.isRunning = True
 
     Log("Server ready")
+
+
+if __name__ == "__main__":
+    print("Start the server from StartServer.py, not here!")
+    from StartServer import startServer
+    startServer()
