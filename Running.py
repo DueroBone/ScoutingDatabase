@@ -1,4 +1,6 @@
+from threading import Thread
 import time
+import json
 
 from BasicFunctions import Log
 import Config
@@ -11,18 +13,19 @@ def updateBackend():
 
 
 def pollApis():
+    # Log("Polling Apis")
     for team in IV.teams:
         file = open(
             f"{IV.dataPath}/Teams/{team}/{Config.ScrapedInfoFileName}", "w")
-        file.write(str(IV.apiStatbotics.get_team_event(team, IV.trueEventKey)))
+        file.write(json.dumps(IV.apiStatbotics.get_team_event(team, IV.trueEventKey)))
         file.close()
 
 
 def backend():
     while IV.isRunning:
-        pollApis()
+        Thread(target=pollApis).start()
         for i in range(Config.ApiDelayReps):
-            updateBackend()
+            # Thread(target=updateBackend).start()
             time.sleep(Config.BackendDelaySec)
             if not IV.isRunning:
                 break
