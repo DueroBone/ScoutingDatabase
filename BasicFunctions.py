@@ -1,9 +1,9 @@
 import os
-import datetime
+from datetime import datetime
 import ImportantVariables as IV
 import json
 logFile = ""
-logName = datetime.datetime.now().ctime()
+logName = datetime.now().ctime()
 
 
 def makeLogFile():
@@ -32,7 +32,7 @@ def Log(Input, level=0, Print=False):
     else:
         tags = ""
     logFile.write(
-        f"{datetime.datetime.now().time().replace(microsecond=0)} >{tags}> {Input}\n")
+        f"{datetime.now().time().replace(microsecond=0)} >{tags}> {Input}\n")
     if Print:
         print(Input)
     return logFile
@@ -49,6 +49,7 @@ def roundDataIn(Team, RoundNum, Scouter="", Cones=0, Cubes=0, Endgame=0):
         dataFile = open(dataFilePath, "x+")
         dataFile.write(json.dumps(newDataDict))
         dataFile.close()
+        Log(f"Created team {Team}'s round {RoundNum}")
         return "Created round file"
     else:
         dataFileOrig = dict(json.loads(open(dataFilePath, "rt").read()))
@@ -64,6 +65,7 @@ def roundDataIn(Team, RoundNum, Scouter="", Cones=0, Cubes=0, Endgame=0):
         dataFile = open(dataFilePath, "w")
         dataFile.write(json.dumps(dataFileOrig))
         dataFile.close()
+        Log(f"Updated team {Team}'s round {RoundNum}")
         return "Updated"
 
 def roundDataOut(Team, RoundNum):

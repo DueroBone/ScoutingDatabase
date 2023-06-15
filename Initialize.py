@@ -70,9 +70,6 @@ def makeNewEvent():
     setupTeams(IV.teams, IV.dataPath)
     Log("Teams set up")
 
-    Log("Making incoming data directory")
-    os.mkdir(f"{IV.dataPath}/{Config.IncomingFolderName}")
-
 
 def resumeEvent():
     Log("SET UP RETURNING EVENT", 3, True)

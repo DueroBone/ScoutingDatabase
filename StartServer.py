@@ -1,4 +1,5 @@
 # import os, Initialize
+from datetime import datetime
 from threading import Thread
 from time import sleep
 
@@ -20,10 +21,9 @@ def stopServer(thread):
 
 
 def startServer():
-    eventName = ""
     initialize()
     sleep(0.1)
-    print("\nServer started\n\n\n")
+    print(f"\nServer started at {datetime.now().ctime()}\n\n\n")
 
     # create thread to continually run in background to do all of the proccessing
     backendThread = Thread(target=backend)
@@ -43,10 +43,6 @@ def startServer():
         elif command == "restart":
             stopServer(backendThread)
             startServer()
-        elif command == "test1":
-            BF.roundDataIn(4485, 2, "Duel", 3, 5, 15)
-        elif command == "test2":
-            BF.roundDataIn(4485, 2, Cones=3, Cubes=7, Scouter="Camden B.")
         else:
             print("Unrecognized command! Type help for more info")
     Log("--End of script--", 1)
