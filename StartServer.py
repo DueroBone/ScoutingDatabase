@@ -8,7 +8,9 @@ from BasicFunctions import Log
 from Initialize import initialize
 from Running import backend
 import ImportantVariables as IV
+import Config
 import BasicFunctions as BF
+import requests
 
 
 def stopServer(thread):
@@ -23,6 +25,8 @@ def stopServer(thread):
 def startServer():
     initialize()
     sleep(0.1)
+    print("Ip address: " + requests.get('icanhazip.com').text + ":" + str(Config.Port))
+    # Port is only from the local network, not the internet. Port forwarding is needed to access from the internet
     print(f"\nServer started at {datetime.now().ctime()}\n\n\n")
 
     # create thread to continually run in background to do all of the proccessing

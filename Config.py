@@ -18,3 +18,6 @@ BackendDelaySec = 5
 # How often to poll the apis (once every X backend updates)
 ApiDelayReps = 2
 # 6
+
+# Web server port
+Port = 8080

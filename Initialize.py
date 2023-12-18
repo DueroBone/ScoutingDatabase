@@ -108,6 +108,7 @@ def initialize(isNew=False):
     Log("Starting web server")
     cherrypy.config.update(
         {'log.screen': False, 'log.access_file': '', 'log.error_file': ''})
+    cherrypy.config.update({'server.socket_port': Config.Port})
     Thread(target=lambda: Webserver.cherrypy.quickstart(
         Webserver.mySite())).start()
 
